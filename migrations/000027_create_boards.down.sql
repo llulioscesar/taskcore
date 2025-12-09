@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS board_configs;
+DROP TABLE IF EXISTS board_columns;
+DROP TABLE IF EXISTS boards;
