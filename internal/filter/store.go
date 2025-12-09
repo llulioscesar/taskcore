@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func Create(ctx context.Context, db *sqlx.DB, f *Filter) error {
@@ -18,7 +18,7 @@ func Create(ctx context.Context, db *sqlx.DB, f *Filter) error {
 	err := db.QueryRowxContext(ctx, query,
 		f.OwnerID, f.Name, f.Description, f.JQL, f.IsPublic, f.IsFavorite,
 	).Scan(&f.ID, &f.CreatedAt, &f.UpdatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -80,7 +80,7 @@ func Update(ctx context.Context, db *sqlx.DB, f *Filter) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -169,11 +169,4 @@ func ListSubscribers(ctx context.Context, db *sqlx.DB, filterID uuid.UUID) ([]*S
 	err := db.SelectContext(ctx, &subs,
 		`SELECT * FROM filter_subscriptions WHERE filter_id = $1`, filterID)
 	return subs, err
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

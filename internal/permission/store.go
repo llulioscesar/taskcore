@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func CreateScheme(ctx context.Context, db *sqlx.DB, ps *Scheme) error {
@@ -18,7 +18,7 @@ func CreateScheme(ctx context.Context, db *sqlx.DB, ps *Scheme) error {
 
 	err := db.QueryRowxContext(ctx, query, ps.Name, ps.Description, ps.IsDefault).
 		Scan(&ps.ID, &ps.CreatedAt, &ps.UpdatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrSchemeNameExists
 	}
 	return err
@@ -54,7 +54,7 @@ func UpdateScheme(ctx context.Context, db *sqlx.DB, ps *Scheme) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrSchemeNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrSchemeNameExists
 	}
 	return err
@@ -184,11 +184,4 @@ func IsAdmin(ctx context.Context, db *sqlx.DB, userID uuid.UUID) (bool, error) {
 		return false, nil
 	}
 	return isAdmin, err
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

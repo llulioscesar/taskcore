@@ -4,11 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func Create(ctx context.Context, db *sqlx.DB, t *Template) error {
@@ -20,7 +20,7 @@ func Create(ctx context.Context, db *sqlx.DB, t *Template) error {
 		t.ProjectID, t.IssueTypeID, t.Name, t.Description, t.Summary,
 		t.Content, t.Priority, pq.Array(t.Labels), t.IsDefault,
 	).Scan(&t.ID, &t.CreatedAt, &t.UpdatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -103,7 +103,7 @@ func Update(ctx context.Context, db *sqlx.DB, t *Template) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -198,11 +198,4 @@ func scanTemplates(rows *sqlx.Rows) ([]*Template, error) {
 		templates = append(templates, t)
 	}
 	return templates, rows.Err()
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

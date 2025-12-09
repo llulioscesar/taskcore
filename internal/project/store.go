@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func Create(ctx context.Context, db *sqlx.DB, p *Project) error {
@@ -21,7 +21,7 @@ func Create(ctx context.Context, db *sqlx.DB, p *Project) error {
 		p.DefaultAssigneeID, p.PermissionSchemeID, p.WorkflowID,
 	).Scan(&p.ID, &p.IssueCounter, &p.CreatedAt, &p.UpdatedAt)
 
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrKeyExists
 	}
 	return err
@@ -79,7 +79,7 @@ func Update(ctx context.Context, db *sqlx.DB, p *Project) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrKeyExists
 	}
 	return err
@@ -200,11 +200,4 @@ func itoa(i int) string {
 		i /= 10
 	}
 	return string(b[idx:])
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

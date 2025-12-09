@@ -8,10 +8,8 @@ import (
 )
 
 var (
-	ErrNotFound        = errors.New("user not found")
-	ErrEmailExists     = errors.New("email already exists")
-	ErrSessionNotFound = errors.New("session not found")
-	ErrSessionExpired  = errors.New("session expired")
+	ErrNotFound    = errors.New("user not found")
+	ErrEmailExists = errors.New("email already exists")
 )
 
 type User struct {
@@ -24,16 +22,4 @@ type User struct {
 	IsAdmin      bool      `db:"is_admin"`
 	CreatedAt    time.Time `db:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at"`
-}
-
-type Session struct {
-	ID           uuid.UUID `db:"id"`
-	UserID       uuid.UUID `db:"user_id"`
-	RefreshToken string    `db:"refresh_token"`
-	ExpiresAt    time.Time `db:"expires_at"`
-	CreatedAt    time.Time `db:"created_at"`
-}
-
-func (s *Session) IsExpired() bool {
-	return time.Now().After(s.ExpiresAt)
 }

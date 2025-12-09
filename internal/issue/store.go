@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func Create(ctx context.Context, db *sqlx.DB, i *Issue) error {
@@ -276,7 +276,7 @@ func ListRelations(ctx context.Context, db *sqlx.DB, issueID uuid.UUID) ([]*Rela
 func CreateLabel(ctx context.Context, db *sqlx.DB, l *Label) error {
 	query := `INSERT INTO labels (project_id, name, color) VALUES ($1, $2, $3) RETURNING id, created_at`
 	err := db.QueryRowxContext(ctx, query, l.ProjectID, l.Name, l.Color).Scan(&l.ID, &l.CreatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrLabelNameExists
 	}
 	return err
@@ -530,11 +530,4 @@ func GetTotalTimeSpent(ctx context.Context, db *sqlx.DB, issueID uuid.UUID) (int
 	err := db.GetContext(ctx, &total,
 		`SELECT COALESCE(SUM(time_spent), 0) FROM issue_work_logs WHERE issue_id = $1`, issueID)
 	return total, err
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

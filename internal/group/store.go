@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func Create(ctx context.Context, db *sqlx.DB, g *Group) error {
@@ -19,7 +19,7 @@ func Create(ctx context.Context, db *sqlx.DB, g *Group) error {
 	err := db.QueryRowxContext(ctx, query, g.Name, g.Description).
 		Scan(&g.ID, &g.CreatedAt, &g.UpdatedAt)
 
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -55,7 +55,7 @@ func Update(ctx context.Context, db *sqlx.DB, g *Group) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -107,11 +107,4 @@ func CountMembers(ctx context.Context, db *sqlx.DB, groupID uuid.UUID) (int, err
 	err := db.GetContext(ctx, &count,
 		`SELECT COUNT(*) FROM group_members WHERE group_id = $1`, groupID)
 	return count, err
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 func Create(ctx context.Context, db *sqlx.DB, w *Workflow) error {
@@ -18,7 +18,7 @@ func Create(ctx context.Context, db *sqlx.DB, w *Workflow) error {
 
 	err := db.QueryRowxContext(ctx, query, w.Name, w.Description, w.IsDefault).
 		Scan(&w.ID, &w.CreatedAt, &w.UpdatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -54,7 +54,7 @@ func Update(ctx context.Context, db *sqlx.DB, w *Workflow) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -476,11 +476,4 @@ func GetFullTransition(ctx context.Context, db *sqlx.DB, id uuid.UUID) (*FullTra
 		Screen:        screen,
 		ScreenFields:  screenFields,
 	}, nil
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 // Field CRUD
@@ -20,7 +20,7 @@ func CreateField(ctx context.Context, db *sqlx.DB, f *Field) error {
 	err := db.QueryRowxContext(ctx, query,
 		f.Name, f.Description, f.FieldType, f.IsRequired, f.IsGlobal,
 	).Scan(&f.ID, &f.CreatedAt, &f.UpdatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -58,7 +58,7 @@ func UpdateField(ctx context.Context, db *sqlx.DB, f *Field) error {
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrNotFound
 	}
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrNameExists
 	}
 	return err
@@ -218,11 +218,4 @@ func ListValueOptions(ctx context.Context, db *sqlx.DB, valueID uuid.UUID) ([]uu
 	err := db.SelectContext(ctx, &ids,
 		`SELECT option_id FROM custom_field_value_options WHERE value_id = $1`, valueID)
 	return ids, err
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }

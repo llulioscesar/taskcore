@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/start-codex/taskcode/internal/store"
 )
 
 // Template CRUD
@@ -20,7 +20,7 @@ func Create(ctx context.Context, db *sqlx.DB, t *Template) error {
 	err := db.QueryRowxContext(ctx, query,
 		t.Key, t.Name, t.Description, t.Category, t.BoardType, t.Icon, t.IsDefault,
 	).Scan(&t.ID, &t.CreatedAt, &t.UpdatedAt)
-	if err != nil && isUniqueViolation(err) {
+	if err != nil && store.IsUniqueViolation(err) {
 		return ErrKeyExists
 	}
 	return err
@@ -233,11 +233,4 @@ func GetFull(ctx context.Context, db *sqlx.DB, id uuid.UUID) (*FullTemplate, err
 		IssueTypes:  issueTypes,
 		Columns:     columns,
 	}, nil
-}
-
-func isUniqueViolation(err error) bool {
-	if err == nil {
-		return false
-	}
-	return strings.Contains(err.Error(), "23505") || strings.Contains(err.Error(), "unique")
 }
