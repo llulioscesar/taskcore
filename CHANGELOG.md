@@ -21,10 +21,18 @@ Contributors should add ongoing changes to the `Unreleased` section. When a mile
 - Added empty states with action buttons across all pages (no workspace, no projects, no boards, no statuses)
 - Added settings page with language switcher
 - Added projects overview dashboard at `/{workspace}/`
+- Added `withAuth` session middleware with allowlist for public routes
+- Added `GET /auth/me` endpoint — always 200, distinguishes auth errors from internal errors
+- Added `POST /auth/logout` endpoint — idempotent, clears cookie, returns 204
+- Added `internal/authctx` package for typed context user ID helpers
+- Added `sessions.IsAuthError` helper for centralized error classification
 - Added a root changelog to track notable project changes
 - Added a README link to the changelog
 
 ### Changed
+- Changed `POST /auth/login` to create session and set `HttpOnly` cookie with `SameSite=Strict`
+- Changed `GET /users/{userID}` to enforce self-only access (403 on mismatch)
+- Changed login to reject archived users before session creation
 - Changed workspace creation to add creator as owner member in a single transaction
 - Changed sidebar workspace selection to sync via URL navigation instead of local state
 - Changed board view to sync statuses on navigation via `$effect`
