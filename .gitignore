@@ -9,7 +9,7 @@ front/.idea
 .DS_Store
 
 # Go build artifacts
-server
+/server
 *.exe
 *.test
 *.out
