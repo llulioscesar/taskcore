@@ -8,6 +8,9 @@ front/.idea
 # macOS
 .DS_Store
 
+# IDE
+.idea/
+
 # Go build artifacts
 /server
 *.exe
