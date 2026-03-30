@@ -36,11 +36,10 @@ The core platform infrastructure and first working end-to-end flow.
 
 **What is not yet shipped in this phase**
 - UI drag-and-drop: `MoveIssue` backend is ready; the frontend is not wired yet.
-- Full cookie-based auth: `POST /api/auth/login` exists; session management and per-handler enforcement are pending.
 
 ---
 
-## Phase 1 — MVP hardening `[shipped]`
+## Phase 1 — MVP hardening `[in progress]`
 
 Close the gap between what the backend supports and what the UI delivers. Deliver a fully usable, secure baseline.
 
@@ -96,7 +95,7 @@ Software delivery is the first deeply modeled workflow in Tookly. This phase bri
 
 Note: software is the first vertical, not the only one.
 
-- **Issue hierarchy**: Epic → Story → Task → Subtask. Schema fields (`parent_issue_id`, `issue_type.level`) already exist; domain rules (cycle prevention, level validation) and UI are pending.
+- **Issue hierarchy**: Epic → Story → Task → Subtask. Schema fields (`parent_issue_id`, `issue_type.level`) and basic DB integrity (same-project, level ordering, anti-cycle) already exist; domain-level validation in the API and the hierarchy UI are pending.
 - **Backlog view**: list of issues not assigned to any sprint; drag issues into a sprint.
 - **Sprint model**: create sprint, add issues from backlog, start sprint, close sprint.
 - **Sprint planning board**: board scoped to a single active sprint.
