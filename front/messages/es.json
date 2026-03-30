@@ -73,5 +73,16 @@
   "settings_nav_users": "Usuarios",
   "settings_nav_account": "Cuenta",
   "settings_users_title": "Usuarios",
-  "settings_account_title": "Cuenta"
+  "settings_account_title": "Cuenta",
+
+  "issue_detail_title": "Título",
+  "issue_detail_description": "Descripción",
+  "issue_detail_priority": "Prioridad",
+  "issue_detail_assignee": "Asignado",
+  "issue_detail_due_date": "Fecha límite",
+  "issue_detail_save": "Guardar",
+  "issue_detail_saving": "Guardando…",
+  "issue_detail_saved": "Guardado",
+  "issue_detail_unassigned": "Sin asignar",
+  "issue_detail_no_date": "Sin fecha"
 }

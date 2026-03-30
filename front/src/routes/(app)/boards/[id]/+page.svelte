@@ -107,7 +107,10 @@
 						</div>
 					{:else}
 						{#each columnIssues as issue}
-							<div class="flex flex-col gap-2 rounded-md border bg-background p-3 shadow-xs">
+							<a
+								href="/projects/{data.board.project_id}/issues/{issue.id}"
+								class="flex flex-col gap-2 rounded-md border bg-background p-3 shadow-xs transition-colors hover:bg-muted/50"
+							>
 								<div class="flex items-start justify-between gap-2">
 									<span class="text-sm leading-snug">{issue.title}</span>
 									{#if issue.priority && issue.priority !== 'none'}
@@ -119,7 +122,7 @@
 									{/if}
 								</div>
 								<span class="text-xs text-muted-foreground">#{issue.number}</span>
-							</div>
+							</a>
 						{/each}
 					{/if}
 				</div>

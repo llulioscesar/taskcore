@@ -105,7 +105,7 @@ func handleArchive(db *sqlx.DB) http.HandlerFunc {
 func handleListMembers(db *sqlx.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		wsID := r.PathValue("workspaceID")
-		if err := authz.RequireWorkspaceAdmin(r.Context(), db, wsID); err != nil {
+		if err := authz.RequireWorkspaceMembership(r.Context(), db, wsID); err != nil {
 			fail(w, err)
 			return
 		}
