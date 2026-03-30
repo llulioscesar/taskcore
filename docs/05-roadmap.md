@@ -51,10 +51,11 @@ Close the gap between what the backend supports and what the UI delivers. Delive
 - PR 5 `[shipped]` — Admin/owner authorization for workspace and project administration.
 - PR 6 `[shipped]` — Frontend session migration (replace auth localStorage with `/auth/me`) and workflow configuration admin enforcement.
 
-**Other Phase 1 items:**
-- **Board UI — drag-and-drop**: wire the frontend to `MoveIssue`; issues move between columns with correct position updates.
-- **Issue detail page**: view and edit title, description, priority, assignee, due date.
-- **Basic board filters**: filter by assignee, priority, and issue type.
+**Remaining UI work** (4-PR delivery plan):
+- PR 21 `[shipped]` — Add `due_date` to issue update and create API contracts.
+- PR 22 `[pending]` — Issue detail page: view and edit title, description, priority, assignee, due date.
+- PR 23 `[pending]` — Board drag-and-drop: move issues between columns with optimistic updates.
+- PR 24 `[pending]` — Basic board filters: client-side filtering by assignee, priority, and issue type.
 
 ---
 
@@ -99,6 +100,8 @@ Note: software is the first vertical, not the only one.
 - **Backlog view**: list of issues not assigned to any sprint; drag issues into a sprint.
 - **Sprint model**: create sprint, add issues from backlog, start sprint, close sprint.
 - **Sprint planning board**: board scoped to a single active sprint.
+- **Planning fields for software teams**: `start_date` to capture when work actually began, and `story_points` to capture relative effort for sprint planning and velocity.
+- **Estimation model**: remains configurable by team and is deferred until the platform defines how time-based and effort-based estimates coexist.
 - **Retrospective notes**: free-text notes attached to a closed sprint.
 - **Issue key display**: `ENG-42` format in UI and API responses.
 
