@@ -41,8 +41,10 @@ What is shipped today:
 - Workspaces and projects.
 - Kanban and Scrum project templates (preconfigure statuses and one default board).
 - Boards, statuses, issue types, issues CRUD.
-- `MoveIssue` API (backend and API layer complete).
+- Board drag-and-drop: move issues between columns and reorder within columns.
+- Issue detail page: view and edit title, description, priority, assignee, due date.
 - Local email/password authentication with server-side sessions.
+- Workspace and project membership enforcement with admin/owner roles.
 - Internationalization: English and Spanish.
 
 Not in the current baseline yet: SMTP delivery, password reset, user invitations, SSO/OIDC, or a first-install global admin bootstrap flow.

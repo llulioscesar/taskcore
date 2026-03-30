@@ -54,7 +54,7 @@ Close the gap between what the backend supports and what the UI delivers. Delive
 **Remaining UI work** (4-PR delivery plan):
 - PR 21 `[shipped]` — Add `due_date` to issue update and create API contracts.
 - PR 22 `[shipped]` — Issue detail page: view and edit title, description, priority, assignee, due date.
-- PR 23 `[pending]` — Board drag-and-drop: move issues between columns with optimistic updates.
+- PR 23 `[shipped]` — Board drag-and-drop: move issues between columns with optimistic updates.
 - PR 24 `[pending]` — Basic board filters: client-side filtering by assignee, priority, and issue type.
 
 ---

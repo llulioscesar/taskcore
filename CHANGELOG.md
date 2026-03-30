@@ -28,6 +28,7 @@ Contributors should add ongoing changes to the `Unreleased` section. When a mile
 - Added workspace membership enforcement on all API routes (read and write)
 - Added project-member creation guard: target user must be a workspace member
 - Added `sessions.IsAuthError` helper for centralized error classification
+- Added board drag-and-drop: move issues between status columns and reorder within columns via `svelte-dnd-action`
 - Added issue detail page at `/{workspace}/projects/{id}/issues/{issueID}` with edit for title, description, priority, assignee, due date
 - Added clickable issue cards on board view linking to issue detail
 - Added `due_date` field to issue create and update API contracts (`YYYY-MM-DD` or `null`)

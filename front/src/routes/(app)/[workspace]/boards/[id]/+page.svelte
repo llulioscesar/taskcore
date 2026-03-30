@@ -2,15 +2,17 @@
 <!-- SPDX-License-Identifier: BUSL-1.1 -->
 
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import type { PageData } from './$types';
 	import type { Issue, Status } from '$lib/api';
+	import { issues as issuesApi, statuses as statusesApi } from '$lib/api';
+	import { dndzone } from 'svelte-dnd-action';
 	import * as Empty from '$lib/components/ui/empty/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import LayoutIcon from '@lucide/svelte/icons/layout';
-	import { statuses as statusesApi } from '$lib/api';
 	import * as m from '$lib/paraglide/messages';
 	import { i18n } from '$lib/i18n.svelte';
 
@@ -40,14 +42,71 @@
 		low: 'bg-blue-100 text-blue-700'
 	};
 
-	// local reactive list — syncs from data on navigation, allows optimistic adds
+	// --- Local reactive state ---
 	let localStatuses = $state<Status[]>([]);
 	$effect(() => { localStatuses = [...data.statuses]; });
 
 	const sortedStatuses = $derived([...localStatuses].sort((a, b) => a.position - b.position));
 
-	function issuesForStatus(statusId: string): Issue[] {
-		return data.issues.filter((i) => i.status_id === statusId);
+	// Column items: one array per status, keyed by status id.
+	// svelte-dnd-action mutates these arrays directly.
+	let columns = $state<Record<string, Issue[]>>({});
+	let persistedColumns = $state<Record<string, Issue[]>>({});
+
+	$effect(() => {
+		const cols: Record<string, Issue[]> = {};
+		for (const status of localStatuses) {
+			cols[status.id] = data.issues
+				.filter((i) => i.status_id === status.id)
+				.sort((a, b) => a.status_position - b.status_position);
+		}
+		columns = cols;
+		persistedColumns = JSON.parse(JSON.stringify(cols));
+	});
+
+	// --- Drag and drop ---
+	const flipDurationMs = 200;
+
+	function handleConsider(statusId: string, e: CustomEvent<{ items: Issue[] }>) {
+		columns[statusId] = e.detail.items;
+	}
+
+	async function handleFinalize(statusId: string, e: CustomEvent<{ items: Issue[]; info: { id: string } }>) {
+		columns[statusId] = e.detail.items;
+		const draggedId = e.detail.info.id;
+
+		// Only the destination zone (the one containing the dragged item) should call move
+		const targetPosition = columns[statusId].findIndex((i) => i.id === draggedId);
+		if (targetPosition === -1) return;
+
+		try {
+			await issuesApi.move(data.board.project_id, draggedId, {
+				target_status_id: statusId,
+				target_position: targetPosition
+			});
+			persistedColumns = JSON.parse(JSON.stringify(columns));
+		} catch {
+			columns = JSON.parse(JSON.stringify(persistedColumns));
+			try {
+				const fresh = await issuesApi.list(data.board.project_id);
+				if (fresh) {
+					const cols: Record<string, Issue[]> = {};
+					for (const status of localStatuses) {
+						cols[status.id] = fresh
+							.filter((i) => i.status_id === status.id)
+							.sort((a, b) => a.status_position - b.status_position);
+					}
+					columns = cols;
+					persistedColumns = JSON.parse(JSON.stringify(cols));
+				}
+			} catch {
+				// keep persisted state
+			}
+		}
+	}
+
+	function issueHref(issue: Issue): string {
+		return `/${page.params.workspace}/projects/${data.board.project_id}/issues/${issue.id}`;
 	}
 
 	// --- Create status sheet ---
@@ -69,6 +128,8 @@
 				category
 			});
 			localStatuses = [...localStatuses, created];
+			columns[created.id] = [];
+			persistedColumns[created.id] = [];
 			sheetOpen = false;
 			resetForm();
 		} catch (err) {
@@ -92,40 +153,41 @@
 	</Empty.Root>
 {:else}
 	<div class="flex h-full min-h-0 gap-4 overflow-x-auto pb-4">
-		{#each sortedStatuses as status}
-			{@const columnIssues = issuesForStatus(status.id)}
+		{#each sortedStatuses as status (status.id)}
 			<div class="flex w-72 shrink-0 flex-col gap-3">
 				<div class="flex items-center gap-2 px-1">
 					<span class="text-sm font-medium">{status.name}</span>
 					<span class="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-						{columnIssues.length}
+						{(columns[status.id] ?? []).length}
 					</span>
 				</div>
-				<div class="flex flex-1 flex-col gap-2 overflow-y-auto rounded-lg bg-muted/40 p-2">
-					{#if columnIssues.length === 0}
-						<div class="flex items-center justify-center py-8 text-xs text-muted-foreground">
-							{t.noIssues}
+				<div
+					class="flex flex-1 flex-col gap-2 overflow-y-auto rounded-lg bg-muted/40 p-2"
+					use:dndzone={{ items: columns[status.id] ?? [], flipDurationMs, dropTargetStyle: {} }}
+					onconsider={(e) => handleConsider(status.id, e)}
+					onfinalize={(e) => handleFinalize(status.id, e)}
+				>
+					{#each columns[status.id] ?? [] as issue (issue.id)}
+						<div
+							class="flex flex-col gap-2 rounded-md border bg-background p-3 shadow-xs transition-colors hover:bg-muted/50 cursor-grab active:cursor-grabbing"
+							onclick={() => goto(issueHref(issue))}
+							onkeydown={(e) => { if (e.key === 'Enter') goto(issueHref(issue)); }}
+							role="button"
+							tabindex="0"
+						>
+							<div class="flex items-start justify-between gap-2">
+								<span class="text-sm leading-snug">{issue.title}</span>
+								{#if issue.priority && issue.priority !== 'none'}
+									<span
+										class="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium {priorityColors[issue.priority] ?? 'bg-muted text-muted-foreground'}"
+									>
+										{issue.priority}
+									</span>
+								{/if}
+							</div>
+							<span class="text-xs text-muted-foreground">#{issue.number}</span>
 						</div>
-					{:else}
-						{#each columnIssues as issue}
-							<a
-								href="/{page.params.workspace}/projects/{data.board.project_id}/issues/{issue.id}"
-								class="flex flex-col gap-2 rounded-md border bg-background p-3 shadow-xs transition-colors hover:bg-muted/50"
-							>
-								<div class="flex items-start justify-between gap-2">
-									<span class="text-sm leading-snug">{issue.title}</span>
-									{#if issue.priority && issue.priority !== 'none'}
-										<span
-											class="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium {priorityColors[issue.priority] ?? 'bg-muted text-muted-foreground'}"
-										>
-											{issue.priority}
-										</span>
-									{/if}
-								</div>
-								<span class="text-xs text-muted-foreground">#{issue.number}</span>
-							</a>
-						{/each}
-					{/if}
+					{/each}
 				</div>
 			</div>
 		{/each}
