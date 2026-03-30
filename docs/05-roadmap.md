@@ -51,10 +51,11 @@ Close the gap between what the backend supports and what the UI delivers. Delive
 - PR 5 `[shipped]` — Admin/owner authorization for workspace and project administration.
 - PR 6 `[shipped]` — Frontend session migration (replace auth localStorage with `/auth/me`) and workflow configuration admin enforcement.
 
-**Other Phase 1 items:**
-- **Board UI — drag-and-drop**: wire the frontend to `MoveIssue`; issues move between columns with correct position updates.
-- **Issue detail page**: view and edit title, description, priority, assignee, due date.
-- **Basic board filters**: filter by assignee, priority, and issue type.
+**Remaining UI work** (4-PR delivery plan):
+- PR 21 `[pending]` — Add `due_date` to issue update and create API contracts.
+- PR 22 `[pending]` — Issue detail page: view and edit title, description, priority, assignee, due date.
+- PR 23 `[pending]` — Board drag-and-drop: move issues between columns with optimistic updates.
+- PR 24 `[pending]` — Basic board filters: client-side filtering by assignee, priority, and issue type.
 
 ---
 
