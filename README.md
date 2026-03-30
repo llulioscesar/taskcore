@@ -13,15 +13,15 @@ Software delivery is the first deeply defined workflow: documentation, decisions
 
 ## Why Tookly
 
-| | Tookly | Jira + Confluence |
-|---|---|---|
-| Self-hosted | Yes | Paid / complex |
-| Docs and planning together | Yes (target) | Split products |
-| Core workflow features | All open | Many behind paywall |
-| Cross-industry templates | Planned | Available but expensive |
-| Source-available | Yes (BSL 1.1) | No |
+| | Tookly | Jira | Linear | Asana | Monday |
+|---|---|---|---|---|---|
+| Self-hosted | Yes | Paid / complex | No | No | No |
+| Docs + planning together | Yes (target) | Separate (Confluence) | No | No | No |
+| Core features | All open | Many behind paywall | Free tier limited | Free tier limited | Free tier limited |
+| Cross-industry templates | Planned | Software only | Software only | General | General |
+| Source-available | Yes (BSL 1.1) | No | No | No | No |
 
-Jira is a useful reference for software workflows. Tookly is not a clone — it is a workflow platform with its own identity.
+Tookly is not a clone of any existing tool — it is a workflow platform with its own identity.
 
 ## Current product baseline
 

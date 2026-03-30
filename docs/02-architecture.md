@@ -35,7 +35,7 @@ The frontend is compiled and embedded into the Go binary at build time. The Go s
 
 - Modular monolith (no microservices in MVP).
 - API REST mounted under `/api` (no version prefix in current routes).
-- Jira-like model: issue is owned by project and status; board is a view (filter + columns) over issues.
+- Issue belongs to a project and has a status; boards are views (filter + columns) over issues.
 
 ---
 

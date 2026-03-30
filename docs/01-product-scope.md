@@ -7,7 +7,7 @@ Current project management tools tend to be:
 - Too complex for small teams that just need to track work.
 - Focused exclusively on software, or so generic they offer no real methodology support.
 - Expensive to adapt — core workflow features locked behind enterprise plans.
-- Split across two products: project tracking in one tool, documentation in another. Teams end up with decisions in Confluence and work in Jira, but the two never truly talk to each other.
+- Split across two products: project tracking in one tool, documentation in another. Teams end up with decisions in one place and work in another, but the two never truly talk to each other.
 
 ## Vision
 
@@ -30,7 +30,7 @@ The broader target-vision term is **work item**. As Tookly grows to support cros
 ## What makes Tookly different
 
 - **Documentation as the source of planning** — not a passive wiki attached as an afterthought, but the starting point for backlog creation, roadmap definition, sprint scope, and review artifacts.
-- **No Jira/Confluence split** — project pages, decision records, and execution artifacts live in the same project, not in separate products.
+- **No split between tracking and docs** — project pages, decision records, and execution artifacts live in the same project, not in separate products.
 - **Templates for any industry** — workflow presets for engineering, HR, legal, marketing, finance, design, and more.
 - **No paywalled core features** — the workflows that matter are available to everyone.
 - **Self-hosted and open source** — run it on your own infrastructure, contribute to it, or fork it.
