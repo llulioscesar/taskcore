@@ -121,7 +121,7 @@ This relationship is **manual first**: documentation and execution artifacts are
 - Board column order is defined in the board configuration.
 - In the MVP, transitions between any two statuses are allowed (no restricted transition rules yet).
 - Issue types and statuses are per-project. An issue's type and status must belong to the same project as the issue.
-- Issue hierarchy: `parent_issue_id` exists in the schema; full hierarchy enforcement and UI are planned (Phase 2).
+- Issue hierarchy: `parent_issue_id` and `issue_type.level` exist in the schema with basic DB integrity (same-project, level ordering, anti-cycle); domain-level API validation and hierarchy UI are planned (Phase 2).
 - Issue numbering is sequential per project, generated via `project_issue_counters` to avoid race conditions.
 
 ---
