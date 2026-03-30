@@ -73,5 +73,16 @@
   "settings_nav_users": "Users",
   "settings_nav_account": "Account",
   "settings_users_title": "Users",
-  "settings_account_title": "Account"
+  "settings_account_title": "Account",
+
+  "issue_detail_title": "Title",
+  "issue_detail_description": "Description",
+  "issue_detail_priority": "Priority",
+  "issue_detail_assignee": "Assignee",
+  "issue_detail_due_date": "Due date",
+  "issue_detail_save": "Save",
+  "issue_detail_saving": "Saving…",
+  "issue_detail_saved": "Saved",
+  "issue_detail_unassigned": "Unassigned",
+  "issue_detail_no_date": "No date"
 }

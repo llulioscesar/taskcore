@@ -198,5 +198,6 @@ export interface CreateIssueBody {
 	assignee_id?: string; parent_issue_id?: string; due_date?: string;
 }
 export interface UpdateIssueBody {
-	title: string; description?: string; priority: string; assignee_id?: string;
+	title: string; description?: string; priority: string;
+	assignee_id?: string | null; due_date?: string | null;
 }

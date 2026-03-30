@@ -28,6 +28,8 @@ Contributors should add ongoing changes to the `Unreleased` section. When a mile
 - Added workspace membership enforcement on all API routes (read and write)
 - Added project-member creation guard: target user must be a workspace member
 - Added `sessions.IsAuthError` helper for centralized error classification
+- Added issue detail page at `/{workspace}/projects/{id}/issues/{issueID}` with edit for title, description, priority, assignee, due date
+- Added clickable issue cards on board view linking to issue detail
 - Added `due_date` field to issue create and update API contracts (`YYYY-MM-DD` or `null`)
 - Added `RequireWorkspaceAdmin` to `internal/authz` for admin/owner role enforcement
 - Added `ApiError` class to frontend API client for typed HTTP error handling
@@ -50,6 +52,8 @@ Contributors should add ongoing changes to the `Unreleased` section. When a mile
 - Changed workspace admin routes (`DELETE /workspaces/{id}`, member management) to require admin/owner role
 - Changed project admin routes (`POST /workspaces/{id}/projects`, `DELETE /projects/{id}`, member management) to require workspace admin/owner role
 - Changed workflow config routes (boards, columns, statuses, issue types) to require workspace admin/owner role
+- Changed `GET /workspaces/{id}/members` from admin-only to member-level (read access for assignee selection)
+- Changed `GET /projects/{id}/members` from admin-only to member-level (read access)
 - Changed frontend auth from localStorage to session-based `/auth/me` validation
 - Changed frontend auth store to in-memory only (removed localStorage persistence)
 - Changed frontend logout to call backend `POST /auth/logout` before clearing state

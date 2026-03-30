@@ -137,12 +137,7 @@ func handleArchive(db *sqlx.DB) http.HandlerFunc {
 func handleListMembers(db *sqlx.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		projID := r.PathValue("projectID")
-		wsID, err := authz.RequireProjectMembership(r.Context(), db, projID)
-		if err != nil {
-			fail(w, err)
-			return
-		}
-		if err := authz.RequireWorkspaceAdmin(r.Context(), db, wsID); err != nil {
+		if _, err := authz.RequireProjectMembership(r.Context(), db, projID); err != nil {
 			fail(w, err)
 			return
 		}

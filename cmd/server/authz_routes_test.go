@@ -474,10 +474,10 @@ func TestAdminWiring_WorkspaceMembers(t *testing.T) {
 	memberToken := loginCookie(t, db, member)
 	adminToken := loginCookie(t, db, admin)
 
-	// Member GET /workspaces/{id}/members → 403
+	// Member GET /workspaces/{id}/members → 200 (read access for all members)
 	env := doRequest(t, srv, "GET", "/workspaces/"+wsID+"/members", memberToken)
-	if env.Status != 403 {
-		t.Fatalf("member GET /workspaces/{id}/members: status = %d, want 403", env.Status)
+	if env.Status != 200 {
+		t.Fatalf("member GET /workspaces/{id}/members: status = %d, want 200 (error: %s)", env.Status, env.Error)
 	}
 
 	// Admin GET /workspaces/{id}/members → 200
@@ -587,10 +587,10 @@ func TestAdminWiring_ProjectMembers(t *testing.T) {
 	memberToken := loginCookie(t, db, member)
 	adminToken := loginCookie(t, db, admin)
 
-	// Member GET /projects/{id}/members → 403
+	// Member GET /projects/{id}/members → 200 (read access for all members)
 	env := doRequest(t, srv, "GET", "/projects/"+projID+"/members", memberToken)
-	if env.Status != 403 {
-		t.Fatalf("member GET /projects/{id}/members: status = %d, want 403", env.Status)
+	if env.Status != 200 {
+		t.Fatalf("member GET /projects/{id}/members: status = %d, want 200 (error: %s)", env.Status, env.Error)
 	}
 
 	// Admin GET /projects/{id}/members → 200
