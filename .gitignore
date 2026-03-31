@@ -27,3 +27,7 @@ AGENTS.md
 plans/
 plan-cloud.md
 
+# Design and asset files (local only)
+.tmp/
+design.pen
+images/

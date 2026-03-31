@@ -11,6 +11,7 @@ Contributors should add ongoing changes to the `Unreleased` section. When a mile
 ## [Unreleased]
 
 ### Added
+- Added `instance_config` table and `internal/instance` package for instance-level key-value configuration
 - Added session storage foundation (`internal/sessions`): `Create`, `Validate`, `Delete`
 - Added SHA-256 token hashing — raw tokens never stored in the database
 - Added archived-user rejection in session validation (`ErrUserArchived`)
