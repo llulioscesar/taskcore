@@ -59,9 +59,13 @@ Close the gap between what the backend supports and what the UI delivers. Delive
 
 ---
 
-## Phase 1.5 — Identity, onboarding, and instance admin `[planned]`
+## Phase 1.5 — Identity, onboarding, and instance admin `[in progress]`
 
 Make self-hosted deployments operable beyond basic local login. This phase covers the missing identity and bootstrap capabilities that sit between MVP auth and broader platform workflows.
+
+**Instance configuration** (PR #25 `[shipped]`)
+- `instance_config` key-value table for instance-level settings.
+- `internal/instance` package: `GetConfig`, `SetConfig`, `IsInitialized`.
 
 **Transactional email foundation**
 - Instance-level SMTP configuration.
